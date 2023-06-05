@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/jivid/passman/passman/passman"
+	"github.com/jivid/passman/passman"
 	"github.com/spf13/cobra"
 )
 
