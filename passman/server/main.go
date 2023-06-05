@@ -6,13 +6,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jivid/passman/passman/passman"
+	"github.com/jivid/passman/passman"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
 	p          *passman.Passman
 	passmanDir string
+	passmanPort string
 )
 
 type rawPassword struct {
@@ -49,6 +50,7 @@ func createPassword(c *gin.Context) {
 
 func main() {
 	flag.StringVar(&passmanDir, "dir", ".", "Directory where passman should init")
+	flag.StringVar(&passmanPort, "port", "8080", "Port to run server on")
 	flag.Parse()
 	p = passman.NewPassman(passmanDir)
 	p.InitOrLoad()
@@ -57,5 +59,5 @@ func main() {
 	router.GET("/passwords/:site", getPassword)
 	router.POST("/passwords", createPassword)
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
-	router.Run("0.0.0.0:8080")
+	router.Run("0.0.0.0:" + passmanPort)
 }

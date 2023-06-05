@@ -1,7 +1,7 @@
 .PHONY: all cli
 
 server:
-	go build -o bin/server ./passman/
+	go build -o bin/server ./passman/server/
 
 cli:
 	go build -o bin/passman-cli ./cli/
