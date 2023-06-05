@@ -1,12 +1,9 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 
-	"github.com/jivid/passman/passman"
+	"github.com/jivid/passman/passman/client"
 	"github.com/spf13/cobra"
 )
 
@@ -23,29 +20,14 @@ var (
 		Long:  "Get the password for a website",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println(fmt.Sprintf("Getting passwords for %s", getOpts.site))
-			resp, err := http.Get(fmt.Sprintf("http://localhost:8080/passwords/%s", getOpts.site))
+			passman := client.PassmanClient{ServerHost: "localhost", ServerPort: "8080"}
+			entries, err := passman.Get(getOpts.site)
 			if err != nil {
-				return err
+				fmt.Println(err)
+				return nil
 			}
-			defer resp.Body.Close()
-			if resp.StatusCode != http.StatusOK {
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					return err
-				}
-				var r map[string]interface{}
-				json.Unmarshal(body, &r)
-				fmt.Println(r["message"])
-			} else {
-				body, err := ioutil.ReadAll(resp.Body)
-				var entries []passman.PassmanEntry
-				err = json.Unmarshal(body, &entries)
-				if err != nil {
-					return err
-				}
-				for _, entry := range entries {
-					fmt.Println(fmt.Sprintf("Site: %s, Username: %s, Password: %s", entry.Site, entry.Username, entry.Password))
-				}
+			for _, entry := range entries {
+				fmt.Println(fmt.Sprintf("Site: %s, Username: %s, Password: %s", entry.Site, entry.Username, entry.Password))
 			}
 			return nil
 
@@ -58,16 +40,11 @@ var (
 		Long:  "Get all passwords currently stored in passman",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("Getting all passwords")
-			resp, err := http.Get("http://localhost:8080/passwords")
+			passman := client.PassmanClient{ServerHost: "localhost", ServerPort: "8080"}
+			entries, err := passman.GetAll()
 			if err != nil {
-				return err
-			}
-			defer resp.Body.Close()
-			body, err := ioutil.ReadAll(resp.Body)
-			var entries []passman.PassmanEntry
-			err = json.Unmarshal(body, &entries)
-			if err != nil {
-				return err
+				fmt.Println(err)
+				return nil
 			}
 			for _, entry := range entries {
 				fmt.Println(fmt.Sprintf("Site: %s, Username: %s, Password: %s", entry.Site, entry.Username, entry.Password))
