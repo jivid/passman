@@ -1,16 +1,17 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jivid/passman/passman/passman"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"net/http"
-	"flag"
 )
 
 var (
-	p *passman.Passman
+	p          *passman.Passman
 	passmanDir string
 )
 

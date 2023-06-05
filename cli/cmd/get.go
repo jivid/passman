@@ -3,10 +3,11 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jivid/passman/passman/passman"
-	"github.com/spf13/cobra"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/jivid/passman/passman/passman"
+	"github.com/spf13/cobra"
 )
 
 type getOptions struct {
